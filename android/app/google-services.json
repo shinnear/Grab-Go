@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "553485446477",
+    "project_id": "grab-and-go-7i4eqy",
+    "storage_bucket": "grab-and-go-7i4eqy.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553485446477:android:43fb07e5cbeabd5a8ddb04",
+        "android_client_info": {
+          "package_name": "com.mycompany.grabandgoo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "553485446477-g5ciiktuc7glffgng12q4290m4uarf7a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.grabandgoo",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "553485446477-9ecnt4buvim9u2o59qj3r0khgh2hpagt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBm_8CoLsOC9RitbvjQO94l4vAmrqtRevc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "553485446477-9ecnt4buvim9u2o59qj3r0khgh2hpagt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "553485446477-qd6f9p5opnii4uouo1l2hjc3ticgt1nr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.grabandgo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
