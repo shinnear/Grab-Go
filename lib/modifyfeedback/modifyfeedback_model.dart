@@ -19,8 +19,8 @@ class ModifyfeedbackModel extends FlutterFlowModel<ModifyfeedbackWidget> {
     if (val.length < 10) {
       return 'Requires at least 10 characters.';
     }
-    if (val.length > 30) {
-      return 'Maximum 30 characters allowed, currently ${val.length}.';
+    if (val.length > 500) {
+      return 'Maximum 500 characters allowed, currently ${val.length}.';
     }
 
     return null;

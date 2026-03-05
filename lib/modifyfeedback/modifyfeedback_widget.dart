@@ -1,4 +1,5 @@
 import '/backend/firebase_storage/storage.dart';
+import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -10,7 +11,9 @@ import 'modifyfeedback_model.dart';
 export 'modifyfeedback_model.dart';
 
 class ModifyfeedbackWidget extends StatefulWidget {
-  const ModifyfeedbackWidget({super.key});
+  const ModifyfeedbackWidget({super.key, this.feedbackdoc});
+
+  final RestaurantFeedbackRecord? feedbackdoc;
 
   static String routeName = 'modifyfeedback';
   static String routePath = '/modifyfeedback';
@@ -29,8 +32,15 @@ class _ModifyfeedbackWidgetState extends State<ModifyfeedbackWidget> {
     super.initState();
     _model = createModel(context, () => ModifyfeedbackModel());
 
-    _model.descproductTextController ??= TextEditingController();
+    _model.descproductTextController ??=
+        TextEditingController(text: widget.feedbackdoc?.description);
     _model.descproductFocusNode ??= FocusNode();
+
+    // preload ratings and image url
+    _model.ratingBarValue1 = widget.feedbackdoc?.ratingFood?.toDouble() ?? 3.0;
+    _model.ratingBarValue2 =
+        widget.feedbackdoc?.ratingService?.toDouble() ?? 3.0;
+    _model.uploadedFileUrl_uploadDataBex = widget.feedbackdoc?.image ?? '';
   }
 
   @override
@@ -82,7 +92,7 @@ class _ModifyfeedbackWidgetState extends State<ModifyfeedbackWidget> {
             children: [
               Form(
                 key: _model.formKey,
-                autovalidateMode: AutovalidateMode.always,
+                autovalidateMode: AutovalidateMode.disabled,
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                   child: Column(
@@ -112,7 +122,7 @@ class _ModifyfeedbackWidgetState extends State<ModifyfeedbackWidget> {
                         autofocus: false,
                         obscureText: false,
                         decoration: InputDecoration(
-                          labelText: 'Description',
+                          labelText: 'Feedback Description',
                           labelStyle:
                               FlutterFlowTheme.of(context).labelMedium.override(
                                     font: GoogleFonts.inter(
@@ -131,7 +141,7 @@ class _ModifyfeedbackWidgetState extends State<ModifyfeedbackWidget> {
                                         .labelMedium
                                         .fontStyle,
                                   ),
-                          hintText: 'Enter product description',
+                          hintText: 'Enter feedback description',
                           hintStyle:
                               FlutterFlowTheme.of(context).labelMedium.override(
                                     font: GoogleFonts.inter(
@@ -265,17 +275,16 @@ class _ModifyfeedbackWidgetState extends State<ModifyfeedbackWidget> {
                                           ))
                                       .toList();
 
-                                  downloadUrls = (await Future.wait(
+                                  var tempUrls = await Future.wait(
                                     selectedMedia.map(
-                                      (m) async => await uploadData(
-                                          m.storagePath, m.bytes),
-                                    ),
-                                  ))
+                                        (m) => uploadData(m.storagePath, m.bytes)),
+                                  );
+                                  downloadUrls = tempUrls
                                       .where((u) => u != null)
-                                      .map((u) => u!)
+                                      .cast<String>()
                                       .toList();
                                 } finally {
-                                  _model.isDataUploading_uploadDataBex = false;
+                                  safeSetState(() => _model.isDataUploading_uploadDataBex = false);
                                 }
                                 if (selectedUploadedFiles.length ==
                                         selectedMedia.length &&
@@ -307,85 +316,109 @@ class _ModifyfeedbackWidgetState extends State<ModifyfeedbackWidget> {
                               ),
                               child: Padding(
                                 padding: EdgeInsets.all(16.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.add_photo_alternate_outlined,
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      size: 48.0,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 12.0, 0.0, 0.0),
-                                      child: Text(
-                                        'Upload Product Image',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .secondaryText,
-                                              letterSpacing: 0.0,
-                                              fontWeight:
+                                child: (_model.uploadedFileUrl_uploadDataBex
+                                            .isNotEmpty)
+                                    ? Image.network(
+                                        _model.uploadedFileUrl_uploadDataBex,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.add_photo_alternate_outlined,
+                                            color: FlutterFlowTheme.of(context)
+                                                .secondaryText,
+                                            size: 48.0,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    0.0, 12.0, 0.0, 0.0),
+                                            child: Text(
+                                              'Upload Product Image',
+                                              style:
                                                   FlutterFlowTheme.of(context)
                                                       .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
+                                                      .override(
+                                                        font: GoogleFonts.inter(
+                                                          fontWeight:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .bodyMedium
+                                                                  .fontWeight,
+                                                          fontStyle:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .bodyMedium
+                                                                  .fontStyle,
+                                                        ),
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .secondaryText,
+                                                        letterSpacing: 0.0,
+                                                        fontWeight:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyMedium
+                                                                .fontWeight,
+                                                        fontStyle:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyMedium
+                                                                .fontStyle,
+                                                      ),
                                             ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 4.0, 0.0, 0.0),
-                                      child: Text(
-                                        'JPG, PNG up to 5MB',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodySmall
-                                            .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodySmall
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodySmall
-                                                        .fontStyle,
-                                              ),
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .secondaryText,
-                                              letterSpacing: 0.0,
-                                              fontWeight:
+                                          ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    0.0, 4.0, 0.0, 0.0),
+                                            child: Text(
+                                              'JPG, PNG up to 5MB',
+                                              style:
                                                   FlutterFlowTheme.of(context)
                                                       .bodySmall
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodySmall
-                                                      .fontStyle,
+                                                      .override(
+                                                        font: GoogleFonts.inter(
+                                                          fontWeight:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .bodySmall
+                                                                  .fontWeight,
+                                                          fontStyle:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .bodySmall
+                                                                  .fontStyle,
+                                                        ),
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .secondaryText,
+                                                        letterSpacing: 0.0,
+                                                        fontWeight:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodySmall
+                                                                .fontWeight,
+                                                        fontStyle:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodySmall
+                                                                .fontStyle,
+                                                      ),
                                             ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                  ],
-                                ),
                               ),
                             ),
                           ),
@@ -493,8 +526,24 @@ class _ModifyfeedbackWidgetState extends State<ModifyfeedbackWidget> {
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0.0, 40.0, 0.0, 0.0),
                 child: FFButtonWidget(
-                  onPressed: () {
-                    print('Button pressed ...');
+                  onPressed: () async {
+                    if (_model.formKey.currentState?.validate() ?? false) {
+                      // update the document
+                      if (widget.feedbackdoc != null) {
+                        await widget.feedbackdoc!.reference.update(
+                          createRestaurantFeedbackRecordData(
+                            description: _model.descproductTextController.text,
+                            image: _model.uploadedFileUrl_uploadDataBex,
+                            ratingFood: _model.ratingBarValue1?.round(),
+                            ratingService: _model.ratingBarValue2?.round(),
+                          ),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Feedback updated')),
+                        );
+                      }
+                      Navigator.of(context).pop();
+                    }
                   },
                   text: 'Modify feedback',
                   options: FFButtonOptions(
@@ -526,6 +575,67 @@ class _ModifyfeedbackWidgetState extends State<ModifyfeedbackWidget> {
                   ),
                 ),
               ),
+              if (widget.feedbackdoc != null)
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
+                  child: FFButtonWidget(
+                    onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (c) => AlertDialog(
+                          title: Text('Delete feedback?'),
+                          content: Text('This action cannot be undone.'),
+                          actions: [
+                            TextButton(
+                                onPressed: () => Navigator.of(c).pop(false),
+                                child: Text('Cancel')),
+                            TextButton(
+                                onPressed: () => Navigator.of(c).pop(true),
+                                child: Text('Delete')),
+                          ],
+                        ),
+                      );
+                      if (confirm == true) {
+                        await widget.feedbackdoc!.reference.delete();
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    text: 'Delete feedback',
+                    options: FFButtonOptions(
+                      height: 40.0,
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                      iconPadding:
+                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                      color: Colors.transparent,
+                      textStyle:
+                          FlutterFlowTheme.of(context).titleSmall.override(
+                                font: GoogleFonts.interTight(
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .titleSmall
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .titleSmall
+                                      .fontStyle,
+                                ),
+                                color: Color(0xFFFF7A00),
+                                letterSpacing: 0.0,
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .fontStyle,
+                              ),
+                      elevation: 0.0,
+                      borderSide: BorderSide(
+                        color: Color(0xFFFF7A00),
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

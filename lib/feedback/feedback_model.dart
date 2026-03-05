@@ -1,4 +1,6 @@
 import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/upload_data.dart';
+import 'dart:typed_data';
 import 'feedback_widget.dart' show FeedbackWidget;
 import 'package:flutter/material.dart';
 
@@ -19,8 +21,8 @@ class FeedbackModel extends FlutterFlowModel<FeedbackWidget> {
     if (val.length < 10) {
       return 'Requires at least 10 characters.';
     }
-    if (val.length > 30) {
-      return 'Maximum 30 characters allowed, currently ${val.length}.';
+    if (val.length > 500) {
+      return 'Maximum 500 characters allowed, currently ${val.length}.';
     }
 
     return null;
@@ -30,6 +32,12 @@ class FeedbackModel extends FlutterFlowModel<FeedbackWidget> {
   double? ratingBarValue1;
   // State field(s) for RatingBar widget.
   double? ratingBarValue2;
+
+  // State fields for image upload
+  bool isDataUploading_uploadDataBex = false;
+  FFUploadedFile uploadedLocalFile_uploadDataBex =
+      FFUploadedFile(bytes: Uint8List.fromList([]), originalFilename: '');
+  String uploadedFileUrl_uploadDataBex = '';
 
   @override
   void initState(BuildContext context) {

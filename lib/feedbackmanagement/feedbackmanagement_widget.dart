@@ -6,6 +6,7 @@ import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'feedbackmanagement_model.dart';
+import '/modifyfeedback/modifyfeedback_widget.dart';
 export 'feedbackmanagement_model.dart';
 
 class FeedbackmanagementWidget extends StatefulWidget {
@@ -338,7 +339,7 @@ class _FeedbackmanagementWidgetState extends State<FeedbackmanagementWidget> {
                                                   child: FFButtonWidget(
                                                     onPressed: () async {
                                                       context.pushNamed(
-                                                        ViewfeedbackWidget
+                                                        ModifyfeedbackWidget
                                                             .routeName,
                                                         queryParameters: {
                                                           'feedbackdoc':
@@ -354,7 +355,7 @@ class _FeedbackmanagementWidgetState extends State<FeedbackmanagementWidget> {
                                                         },
                                                       );
                                                     },
-                                                    text: 'Voir',
+                                                    text: 'Edit',
                                                     options: FFButtonOptions(
                                                       height: 36.0,
                                                       padding:
@@ -410,9 +411,49 @@ class _FeedbackmanagementWidgetState extends State<FeedbackmanagementWidget> {
                                                 ),
                                                 Expanded(
                                                   child: FFButtonWidget(
-                                                    onPressed: () {
-                                                      print(
-                                                          'Button pressed ...');
+                                                    onPressed: () async {
+                                                      final confirm =
+                                                          await showDialog<
+                                                              bool>(
+                                                        context: context,
+                                                        builder: (c) =>
+                                                            AlertDialog(
+                                                          title: Text(
+                                                              'Delete feedback?'),
+                                                          content: Text(
+                                                              'This action cannot be undone.'),
+                                                          actions: [
+                                                            TextButton(
+                                                                onPressed: () =>
+                                                                    Navigator.of(
+                                                                            c)
+                                                                        .pop(
+                                                                            false),
+                                                                child: Text(
+                                                                    'Cancel')),
+                                                            TextButton(
+                                                                onPressed: () =>
+                                                                    Navigator.of(
+                                                                            c)
+                                                                        .pop(
+                                                                            true),
+                                                                child: Text(
+                                                                    'Delete')),
+                                                          ],
+                                                        ),
+                                                      );
+                                                      if (confirm == true) {
+                                                        await listViewRestaurantFeedbackRecord
+                                                            .reference
+                                                            .delete();
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                              content: Text(
+                                                                  'Feedback deleted')),
+                                                        );
+                                                      }
                                                     },
                                                     text: 'Delete',
                                                     options: FFButtonOptions(
